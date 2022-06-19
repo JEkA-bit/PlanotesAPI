@@ -1,17 +1,21 @@
 package net.planotes.services.domain;
 
-import net.planotes.model.mysql.Password;
 import net.planotes.model.mongo.User;
+import net.planotes.model.mysql.Password;
 import net.planotes.repositories.mongo.IUserRepository;
 import net.planotes.services.EmailService;
+import net.planotes.services.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -26,26 +30,36 @@ public class UserService {
     private IUserRepository repository;
 
     @Autowired
+    private LogService logService;
+
+    @Autowired
     private PasswordService passwordService;
 
     @Autowired
     private EmailService service;
 
+    @PostConstruct
+    private void init() {
+        clear();
+    }
+
     public List<User> getAll() {
         return repository.findAll();
     }
+
     public User getOne(String id) {
         return repository.findById(id).orElse(null);
     }
 
     public User create(User user) {
         user.setActivationCode(UUID.randomUUID().toString());
+        user.setCreatedAt(LocalDateTime.now());
         String content = "\n" +
                 "    <div style=\"padding: 10px; font-family: 'Courier New', Courier, monospace; text-align: center;\">\n" +
                 "        <h1>Activate your account</h1>\n" +
                 "        <hr>\n" +
                 "        <p> You need to go to the activation page and continue your registration.<br> \\n\" +\n" +
-                "        \"To go to the page go to the <a href='" + host + ":" + port +"'>link</a> or click the button \\\"OPEN\\\"\\n\" +\n" +
+                "        \"To go to the page go to the <a href='" + host + ":" + port + "'>link</a> or click the button \\\"OPEN\\\"\\n\" +\n" +
                 "                \"        You can change a password in 15 next minutes.</p>\n" +
                 "        <button style=\"padding: 5px 20px;\n" +
                 "        border: none;\n" +
@@ -62,13 +76,25 @@ public class UserService {
         return repository.save(user);
     }
 
-    public User create(String code, User user){
+    public void clear() {
+        repository.findAll()
+                .stream()
+                .filter(item -> item.getCreatedAt().until(LocalDateTime.now(), ChronoUnit.HOURS) > 12)
+                .collect(Collectors.toList())
+                .forEach(user -> repository.delete(user));
+
+    }
+
+    public User create(String code, User user) {
         User user1 = repository.findAll()
                 .stream()
                 .filter(item -> item.getActivationCode().equals(code))
                 .findFirst().orElse(null);
 
-        if( user1 == null) return null;
+        if (user1 == null) {
+            logService.writeLog("Cannot create, requires activation code", "WARN");
+            return null;
+        }
 
         user.setId(user1.getId());
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
@@ -78,10 +104,16 @@ public class UserService {
         user = repository.save(user);
         passwordService.create(new Password(LocalDateTime.now(),
                 LocalDateTime.now(), user.getId(), user.getPassword()));
+
         return user;
     }
 
     public User update(User user) {
+        if (user == null || user.getId().equals(null)) {
+            logService.writeLog("User cannot to be null", "WARN");
+            return null;
+        }
+
         user.setUpdatedAt(LocalDateTime.now());
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         return repository.save(user);
