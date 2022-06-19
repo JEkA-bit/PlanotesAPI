@@ -1,7 +1,7 @@
 package net.planotes.controllers;
 
 import net.planotes.model.mongo.Tag;
-import net.planotes.service.domain.TagService;
+import net.planotes.services.domain.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

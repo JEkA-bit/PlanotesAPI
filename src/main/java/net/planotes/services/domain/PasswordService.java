@@ -1,8 +1,8 @@
-package net.planotes.service.domain;
+package net.planotes.services.domain;
 
 import net.planotes.model.mysql.Password;
 import net.planotes.model.mongo.User;
-import net.planotes.repository.mysql.IPasswordRepository;
+import net.planotes.repositories.mysql.IPasswordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

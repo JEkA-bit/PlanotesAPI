@@ -1,9 +1,9 @@
-package net.planotes.service.domain;
+package net.planotes.services.domain;
 
 import net.planotes.model.mongo.NoteTag;
 import net.planotes.model.mongo.Tag;
-import net.planotes.repository.mongo.INoteTagRepository;
-import net.planotes.repository.mongo.ITagRepository;
+import net.planotes.repositories.mongo.INoteTagRepository;
+import net.planotes.repositories.mongo.ITagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

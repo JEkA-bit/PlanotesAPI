@@ -1,4 +1,4 @@
-package net.planotes.repository.mysql;
+package net.planotes.repositories.mysql;
 
 import net.planotes.model.mysql.Password;
 import org.springframework.data.mongodb.repository.MongoRepository;

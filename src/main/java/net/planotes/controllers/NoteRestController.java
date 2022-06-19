@@ -1,7 +1,7 @@
 package net.planotes.controllers;
 
 import net.planotes.model.mongo.Note;
-import net.planotes.service.domain.NoteService;
+import net.planotes.services.domain.NoteService;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

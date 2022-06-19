@@ -33,4 +33,5 @@ build/
 .vscode/
 
 ### project ###
-resources
+resources/logs
+resources/application.properties

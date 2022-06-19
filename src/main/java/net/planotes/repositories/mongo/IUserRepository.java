@@ -1,4 +1,4 @@
-package net.planotes.repository.mongo;
+package net.planotes.repositories.mongo;
 
 import net.planotes.model.mongo.User;
 import org.springframework.data.mongodb.repository.MongoRepository;

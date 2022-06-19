@@ -1,9 +1,9 @@
-package net.planotes.service.domain;
+package net.planotes.services.domain;
 
 import net.planotes.model.mysql.Password;
 import net.planotes.model.mongo.User;
-import net.planotes.repository.mongo.IUserRepository;
-import net.planotes.service.EmailService;
+import net.planotes.repositories.mongo.IUserRepository;
+import net.planotes.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

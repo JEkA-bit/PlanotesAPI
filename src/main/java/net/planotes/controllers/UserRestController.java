@@ -1,7 +1,7 @@
 package net.planotes.controllers;
 
 import net.planotes.model.mongo.User;
-import net.planotes.service.domain.UserService;
+import net.planotes.services.domain.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

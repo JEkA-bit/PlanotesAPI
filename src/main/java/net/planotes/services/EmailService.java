@@ -1,4 +1,4 @@
-package net.planotes.service;
+package net.planotes.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

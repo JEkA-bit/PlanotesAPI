@@ -1,8 +1,8 @@
-package net.planotes.service.domain;
+package net.planotes.services.domain;
 
 import net.planotes.model.mongo.Login;
 import net.planotes.model.mongo.User;
-import net.planotes.repository.mongo.ILoginRepository;
+import net.planotes.repositories.mongo.ILoginRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
