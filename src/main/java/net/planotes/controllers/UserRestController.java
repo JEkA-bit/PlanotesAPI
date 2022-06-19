@@ -47,11 +47,16 @@ public class UserRestController {
 
     @PostMapping("/reset")
     public void reset(@RequestParam(name = "email", defaultValue = "") String email){
-        service.forgotPassword(email, "Password reset");
+        service.sendLinkToEmailForResetPassword(email, "Password reset");
     }
 
     @PostMapping("/activate/{code}")
     public void activate(@PathVariable(value = "code")String code, @RequestBody User user){
         service.create(code, user);
+    }
+
+    @PostMapping("/reset/{code}")
+    public String reset(@PathVariable(value = "code")String code, @RequestParam(name = "password") String password){
+        return service.resetPassword(code, password);
     }
 }

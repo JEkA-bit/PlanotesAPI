@@ -40,7 +40,7 @@ public class UserService {
 
     @PostConstruct
     private void init() {
-        clear();
+        clearNotActivatedAccounts();
     }
 
     public List<User> getAll() {
@@ -52,6 +52,9 @@ public class UserService {
     }
 
     public User create(User user) {
+
+        if(!repository.findUserByEmail(user.getEmail()).equals(null)) return null;
+
         user.setActivationCode(UUID.randomUUID().toString());
         user.setCreatedAt(LocalDateTime.now());
         String content = "\n" +
@@ -76,22 +79,14 @@ public class UserService {
         return repository.save(user);
     }
 
-    public void clear() {
-        repository.findAll()
-                .stream()
-                .filter(item -> item.getCreatedAt().until(LocalDateTime.now(), ChronoUnit.HOURS) > 12)
-                .collect(Collectors.toList())
-                .forEach(user -> repository.delete(user));
-
+    public void clearNotActivatedAccounts() {
+        repository.deleteUsersByActivationCodeIsNotNullAndPasswordIsNull();
     }
 
     public User create(String code, User user) {
-        User user1 = repository.findAll()
-                .stream()
-                .filter(item -> item.getActivationCode().equals(code))
-                .findFirst().orElse(null);
+        User user1 = repository.findUserByActivationCode(code);
 
-        if (user1 == null) {
+        if (user1.equals(null)) {
             logService.writeLog("Cannot create, requires activation code", "WARN");
             return null;
         }
@@ -109,7 +104,7 @@ public class UserService {
     }
 
     public User update(User user) {
-        if (user == null || user.getId().equals(null)) {
+        if (user.getId() == null) {
             logService.writeLog("User cannot to be null", "WARN");
             return null;
         }
@@ -120,16 +115,14 @@ public class UserService {
     }
 
     public User delete(String id) {
-        User user = repository.findById(id).orElse(null);
-        passwordService.deleteByUserId(user.getId());
-        repository.deleteById(id);
-        return user;
+        return repository.deleteUserById(id);
     }
 
     public User auth(String email, String password) {
-        User user = repository.findAll().stream().
-                filter(item -> item.getEmail().equals(email)).findFirst().orElse(null);
-        if (user == null) return null;
+
+        User user = repository.findUserByEmail(email);
+
+        if(user.equals(null)) return null;
 
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
@@ -139,13 +132,13 @@ public class UserService {
         return null;
     }
 
-    public void forgotPassword(String emailTo, String subject) {
+    public void sendLinkToEmailForResetPassword(String emailTo, String subject) {
 
-        User user = repository.findAll().stream()
-                .filter(item -> item.getEmail().equals(emailTo))
-                .findFirst().orElse(null);
-
+        User user = repository.findUserByEmail(emailTo);
         if (user == null) return;
+
+        user.setActivationCode(UUID.randomUUID().toString());
+        repository.save(user);
 
         String content = "\n" +
                 "    <div style=\"padding: 10px; font-family: 'Courier New', Courier, monospace; text-align: center;\">\n" +
@@ -169,5 +162,13 @@ public class UserService {
         service.send(emailTo, subject, content);
     }
 
+    public String resetPassword(String code, String password){
+        User user = repository.findUserByActivationCode(code);
+        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setActivationCode(null);
 
+        repository.save(user);
+        return "Password has changed!";
+    }
 }

@@ -3,24 +3,24 @@ package net.planotes.services;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
 public class LogService {
 
-    private FileWriter fileWriter;
     private FileReader fileReader;
     private File file;
 
     public void writeLog(String message, String typeOfLog) {
         try {
-            String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSS"));
-            file = new File("resources/logs/logs.txt");
-
-            fileWriter = new FileWriter(file);
-            fileWriter.write(now + " " + typeOfLog + " " + message);
-            fileWriter.close();
+            Files.write(
+                    Paths.get("src/main/resources/logs/logs.txt"),
+                    ("\n" + LocalDateTime.now() + " " + typeOfLog + " " + message).getBytes(),
+                    StandardOpenOption.APPEND);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -29,7 +29,7 @@ public class LogService {
     public String getReadLog() {
         String all = "";
         try {
-            file = new File("resources/logs/logs.txt");
+            file = new File("src/main/resources/logs/logs.txt");
             fileReader = new FileReader(file);
 
             BufferedReader reader = new BufferedReader(fileReader);
