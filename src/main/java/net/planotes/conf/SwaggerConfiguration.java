@@ -14,7 +14,7 @@ public class SwaggerConfiguration {
     public Docket api(){
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("net.planotes.controllers"))
+                .apis(RequestHandlerSelectors.basePackage("net.planotes.restcontrollers"))
                 .paths(PathSelectors.any())
                 .build();
     }

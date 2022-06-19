@@ -1,4 +1,4 @@
-package net.planotes.controllers;
+package net.planotes.restcontrollers;
 
 import net.planotes.model.mongo.User;
 import net.planotes.services.domain.UserService;

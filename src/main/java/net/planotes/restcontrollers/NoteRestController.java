@@ -1,4 +1,4 @@
-package net.planotes.controllers;
+package net.planotes.restcontrollers;
 
 import net.planotes.model.mongo.Note;
 import net.planotes.services.domain.NoteService;
