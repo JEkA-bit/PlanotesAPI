@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class UserController {
 
-    @GetMapping("/user/authForm")
+    @GetMapping("/sign-up")
     public String auth(){
-        return "resetForm";
+        return "sign-up/index";
     }
 }
