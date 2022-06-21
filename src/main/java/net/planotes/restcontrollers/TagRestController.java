@@ -1,4 +1,4 @@
-package net.planotes.controllers;
+package net.planotes.restcontrollers;
 
 import net.planotes.model.mongo.Tag;
 import net.planotes.service.domain.TagService;

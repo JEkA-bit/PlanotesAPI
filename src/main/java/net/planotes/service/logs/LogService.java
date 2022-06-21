@@ -1,4 +1,4 @@
-package net.planotes.logs;
+package net.planotes.service.logs;
 
 import org.springframework.stereotype.Service;
 
@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
-public class Logs {
+public class LogService {
 
     private FileWriter fileWriter;
     private FileReader fileReader;
